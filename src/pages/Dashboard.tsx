@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { getAvailableTables, reserveTable, cancelReservation } from "../services/tableService";
-import TableCard from "../components/Tablecard";
+import TableCard from "../components/TableCard";
 import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
