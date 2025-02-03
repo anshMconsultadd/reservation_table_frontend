@@ -1,11 +1,13 @@
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { getAvailableTables, reserveTable, cancelReservation } from "../services/tableService";
+import TableCard from "../components/Tablecard";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
-  const { token } = useContext(AuthContext)!;
+  const { token ,logout} = useContext(AuthContext)!;
   const [tables, setTables] = useState<any[]>([]);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchTables = async () => {
       try {
@@ -36,28 +38,33 @@ const Dashboard = () => {
     }
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
   return (
     <div className="p-4">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl">Dashboard</h1>
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 text-white px-4 py-2 rounded"
+        >
+          Logout
+        </button>
+      </div>
+      <div className="p-4">
+      <div></div>
       <h1 className="text-3xl mb-4">Available Tables</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {tables.map((table) => (
-          <div key={table.id} className="border p-4 rounded shadow-lg">
-            <h2 className="text-xl mb-2">Table #{table.id}</h2>
-            <p>Capacity: {table.capacity}</p>
-            <p>Status: {table.is_reserved ? "Reserved" : "Available"}</p>
-            {table.is_reserved ? (
-              <button onClick={() => handleCancel(table.id)} className="mt-2 w-full bg-red-500 text-white py-2 rounded">
-                Cancel Reservation
-              </button>
-            ) : (
-              <button onClick={() => handleReserve(table.id)} className="mt-2 w-full bg-blue-500 text-white py-2 rounded">
-                Reserve Table
-              </button>
-            )}
-          </div>
+          <TableCard key={table.id} table={table} onReserved={handleReserve} onCanceled={handleCancel} />
         ))}
       </div>
     </div>
+    </div>
+    
   );
 };
 

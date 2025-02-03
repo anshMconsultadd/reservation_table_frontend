@@ -1,28 +1,27 @@
 import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import AdminTableCard from "../components/AdminTableCard";
+import { getAllTables, updateTable, deleteTable,createTable } from "../services/adminTableService";
 
 const AdminPanel = () => {
-  const { user, token } = useContext(AuthContext)!;
+  const { user, token ,logout} = useContext(AuthContext)!;
   const [tables, setTables] = useState<any[]>([]);
-  const [newCapacity, setNewCapacity] = useState<number | string>(""); 
-  const [editingTable, setEditingTable] = useState<number | null>(null); 
+  const [newCapacity, setNewCapacity] = useState<number | string>("");
+  const [editingTable, setEditingTable] = useState<number | null>(null);
+  const [newTableCapacity, setNewTableCapacity] = useState<number | string>(""); 
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch tables only if the user is an admin
     if (user?.role !== "admin") {
-      navigate("/dashboard"); // Redirect non-admin users
+      navigate("/dashboard");
     } else {
       const fetchTables = async () => {
         try {
-          const response = await axios.get("http://localhost:8000/admin/tables", {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          setTables(response.data);
+          const data = await getAllTables(token!);
+          setTables(data);
         } catch (error) {
-          console.error("Failed to fetch tables", error);
+          console.error(error);
         }
       };
       fetchTables();
@@ -31,74 +30,86 @@ const AdminPanel = () => {
 
   const handleUpdate = async (tableId: number) => {
     try {
-      await axios.put(
-        `http://localhost:8000/admin/tables/${tableId}`,
-        { capacity: newCapacity ,
-            is_reserved: false
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      await updateTable(tableId, Number(newCapacity), token!);
       setTables(tables.map((table) => (table.id === tableId ? { ...table, capacity: newCapacity, is_reserved: false } : table)));
       setNewCapacity("");
       setEditingTable(null);
     } catch (error) {
-      console.error("Failed to update table", error);
+      console.error(error);
     }
   };
 
   const handleDelete = async (tableId: number) => {
     try {
-      await axios.delete(`http://localhost:8000/admin/tables/${tableId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await deleteTable(tableId, token!);
       setTables(tables.filter((table) => table.id !== tableId));
     } catch (error) {
-      console.error("Failed to delete table", error);
+      console.error(error);
     }
   };
+
+  const handleCreateTable = async () => {
+    if (Number(newTableCapacity) <= 0) {
+      alert("Please enter a valid capacity");
+      return;
+    }
+
+    try {
+      const newTable = await createTable(Number(newTableCapacity), token!);
+      setTables((prevTables) => [...prevTables, newTable]); 
+      setNewTableCapacity(""); 
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
 
   return (
     <div className="p-4">
       <h1 className="text-3xl mb-4">Admin Panel - Manage Tables</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl">Dashboard</h1>
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 text-white px-4 py-2 rounded"
+        >
+          Logout
+        </button>
+      </div>
+      <div className="mb-4 p-4 border rounded shadow-lg">
+        <h2 className="text-xl mb-2">Create a New Table</h2>
+        <input
+          type="number"
+          value={newTableCapacity}
+          onChange={(e) => setNewTableCapacity(e.target.value)}
+          placeholder="Enter table capacity"
+          className="p-2 border rounded w-full"
+        />
+        <button
+          onClick={handleCreateTable}
+          className="mt-2 w-full bg-blue-500 text-white py-2 rounded"
+        >
+          Create Table
+        </button>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {tables.map((table) => (
-          <div key={table.id} className="border p-4 rounded shadow-lg">
-            <h2 className="text-xl mb-2">Table #{table.id}</h2>
-            <p>Capacity: {editingTable === table.id ? (
-              <input
-                type="number"
-                value={newCapacity}
-                onChange={(e) => setNewCapacity(e.target.value)}
-                className="p-1 border rounded"
-              />
-            ) : (
-              table.capacity
-            )}</p>
-            <p>Status: {table.is_reserved ? "Reserved" : "Available"}</p>
-            {editingTable === table.id ? (
-              <button
-                onClick={() => handleUpdate(table.id)}
-                className="mt-2 w-full bg-green-500 text-white py-2 rounded"
-              >
-                Update Table
-              </button>
-            ) : (
-              <button
-                onClick={() => setEditingTable(table.id)}
-                className="mt-2 w-full bg-yellow-500 text-white py-2 rounded"
-              >
-                Edit Table
-              </button>
-            )}
-            <button
-              onClick={() => handleDelete(table.id)}
-              className="mt-2 w-full bg-red-500 text-white py-2 rounded"
-            >
-              Delete Table
-            </button>
-          </div>
+          <AdminTableCard 
+            key={table.id} 
+            table={table} 
+            editingTable={editingTable} 
+            newCapacity={newCapacity} 
+            setNewCapacity={setNewCapacity} 
+            handleUpdate={handleUpdate} 
+            setEditingTable={setEditingTable} 
+            handleDelete={handleDelete} 
+          />
         ))}
       </div>
     </div>

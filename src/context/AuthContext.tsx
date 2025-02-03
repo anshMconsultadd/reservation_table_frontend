@@ -18,8 +18,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
  
   const storedToken = localStorage.getItem("token");
   const storedUser = localStorage.getItem("user");
-
-
+  
   const [token, setToken] = useState<string | null>(storedToken);
   const [user, setUser] = useState<{ username: string; role: string } | null>(
     storedUser ? JSON.parse(storedUser) : null
@@ -34,7 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
     }
-  }, [token, user]);
+  }, [user]);
 
 
   const login = async (username: string, password: string) => {
@@ -47,8 +46,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       setToken(data.access_token);
       setUser(userData);
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("token", JSON.stringify(data.access_token));
     } catch (error) {
       console.error("Login failed", error);
+      
     }
   };
 
