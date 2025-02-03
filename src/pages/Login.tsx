@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext,useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -8,16 +8,32 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  // const handleLogin = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   await login(username, password);
+  //   console.log(user);
+  //   if (user?.role === "admin") {
+  //     navigate("/admin");
+  //   } else {
+  //     navigate("/dashboard");
+  //   }
+  // };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    await login(username, password);
-    console.log(user);
-    if (user?.role === "admin") {
+    await login(username, password); 
+  };
+
+useEffect(() => {
+  if (user?.role) {
+    if (user.role === "admin") {
       navigate("/admin");
     } else {
       navigate("/dashboard");
     }
-  };
+  }
+}, [user, navigate]); 
+  
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -69,13 +85,6 @@ const Login = () => {
             />
            <b> Ansh Mehta</b>
           </a>
-          <div className="flex justify-center mt-4 space-x-4">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" className="h-13" alt="React" />
-            <img src="https://seeklogo.com/images/F/fastapi-logo-A3EDAAABDB-seeklogo.com.png" className="h-13" alt="FastAPI" />
-            <img src="https://www.svgrepo.com/show/303251/mysql-logo.svg" className="h-18 " alt="MySQL" />
-            <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Typescript_logo_2020.svg" className="h-13" alt="TypeScript" />
-            <img src="https://logos-world.net/wp-content/uploads/2024/10/Vercel-Logo.jpg" className="h-13" alt="Vercel" />
-          </div>
         </div>
       </div>
     </div>

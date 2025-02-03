@@ -5,7 +5,7 @@ import AdminTableCard from "../components/AdminTableCard";
 import { getAllTables, updateTable, deleteTable,createTable } from "../services/adminTableService";
 
 const AdminPanel = () => {
-  const { user, token } = useContext(AuthContext)!;
+  const { user, token ,logout} = useContext(AuthContext)!;
   const [tables, setTables] = useState<any[]>([]);
   const [newCapacity, setNewCapacity] = useState<number | string>("");
   const [editingTable, setEditingTable] = useState<number | null>(null);
@@ -47,7 +47,7 @@ const AdminPanel = () => {
       console.error(error);
     }
   };
-  
+
   const handleCreateTable = async () => {
     if (Number(newTableCapacity) <= 0) {
       alert("Please enter a valid capacity");
@@ -64,10 +64,24 @@ const AdminPanel = () => {
   };
 
 
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
+
   return (
     <div className="p-4">
       <h1 className="text-3xl mb-4">Admin Panel - Manage Tables</h1>
-
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl">Dashboard</h1>
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 text-white px-4 py-2 rounded"
+        >
+          Logout
+        </button>
+      </div>
       <div className="mb-4 p-4 border rounded shadow-lg">
         <h2 className="text-xl mb-2">Create a New Table</h2>
         <input
