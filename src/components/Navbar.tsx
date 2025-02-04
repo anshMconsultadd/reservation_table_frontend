@@ -13,36 +13,51 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-gray-800 text-white p-4">
+    <nav className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 shadow-lg">
       <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-xl font-bold">
+        <Link
+          to="/"
+          className="text-2xl font-bold hover:text-gray-200 transition duration-200"
+        >
           Table Reservation
         </Link>
 
         <div className="space-x-4">
           {token ? (
             <>
-              <Link to="/dashboard" className="hover:text-gray-300">
+              <Link
+                to="/dashboard"
+                className="hover:text-gray-300 transition duration-200"
+              >
                 Dashboard
               </Link>
               {user?.role === "admin" && (
-                <Link to="/admin" className="hover:text-gray-300">
+                <Link
+                  to="/admin"
+                  className="hover:text-gray-300 transition duration-200"
+                >
                   Admin Panel
                 </Link>
               )}
               <button
                 onClick={handleLogout}
-                className="bg-red-500 px-4 py-2 rounded hover:bg-red-600"
+                className="bg-red-500 px-4 py-2 rounded-lg hover:bg-red-600 transition duration-200"
               >
                 Logout
               </button>
             </>
           ) : (
             <>
-              <Link to="/" className="hover:text-gray-300">
+              <Link
+                to="/"
+                className="hover:text-gray-300 transition duration-200"
+              >
                 Login
               </Link>
-              <Link to="/signup" className="hover:text-gray-300">
+              <Link
+                to="/signup"
+                className="hover:text-gray-300 transition duration-200"
+              >
                 Signup
               </Link>
             </>
