@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import LoginForm from "../components/LoginForm";
-// import dashboard_table_reservation from "../assets/dashboard_table_resrevation.jpg";
 
 const Login = () => {
   return (

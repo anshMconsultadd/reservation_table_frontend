@@ -14,7 +14,6 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!token) return;
-    console.log("Using token:", token);
     const fetchTables = async () => {
       try {
         const data = await getAvailableTables(token!);
@@ -57,20 +56,19 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="p-4">
-      <div className="p-4">
-        <div></div>
-        <h1 className="text-3xl mb-4">Available Tables</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {tables.map((table) => (
-            <TableCard
-              key={table.id}
-              table={table}
-              onReserved={handleReserve}
-              onCanceled={handleCancel}
-            />
-          ))}
-        </div>
+    <div className="p-6">
+      <h1 className="text-4xl font-semibold text-center text-gray-700 mb-6">
+        Available Tables
+      </h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {tables.map((table) => (
+          <TableCard
+            key={table.id}
+            table={table}
+            onReserved={handleReserve}
+            onCanceled={handleCancel}
+          />
+        ))}
       </div>
     </div>
   );

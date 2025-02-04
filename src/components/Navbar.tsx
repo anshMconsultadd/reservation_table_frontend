@@ -13,40 +13,64 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-gray-800 text-white p-4">
+    <nav className="bg-gray-800 text-white p-4 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-xl font-bold">
+        <Link
+          to="/"
+          className="text-2xl font-bold text-white hover:text-gray-300 transition-colors"
+        >
           Table Reservation
         </Link>
 
-        <div className="space-x-4">
+        <div className="space-x-6 hidden md:flex">
           {token ? (
             <>
-              <Link to="/dashboard" className="hover:text-gray-300">
+              <Link
+                to="/dashboard"
+                className="text-lg hover:text-gray-300 transition-all"
+              >
                 Dashboard
               </Link>
               {user?.role === "admin" && (
-                <Link to="/admin" className="hover:text-gray-300">
+                <Link
+                  to="/admin"
+                  className="text-lg hover:text-gray-300 transition-all"
+                >
                   Admin Panel
                 </Link>
               )}
               <button
                 onClick={handleLogout}
-                className="bg-red-500 px-4 py-2 rounded hover:bg-red-600"
+                className="bg-red-500 px-4 py-2 rounded hover:bg-red-600 transition-all"
               >
                 Logout
               </button>
             </>
           ) : (
             <>
-              <Link to="/" className="hover:text-gray-300">
+              <Link
+                to="/"
+                className="text-lg hover:text-gray-300 transition-all"
+              >
                 Login
               </Link>
-              <Link to="/signup" className="hover:text-gray-300">
+              <Link
+                to="/signup"
+                className="text-lg hover:text-gray-300 transition-all"
+              >
                 Signup
               </Link>
             </>
           )}
+        </div>
+
+        <div className="md:hidden flex items-center">
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 px-4 py-2 rounded hover:bg-red-600 transition-all"
+          >
+            Logout
+          </button>
         </div>
       </div>
     </nav>
