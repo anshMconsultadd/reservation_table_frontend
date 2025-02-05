@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:8000"; 
+// const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export const getAllTables = async (token: string) => {
   try {
@@ -14,22 +15,27 @@ export const getAllTables = async (token: string) => {
   }
 };
 
-
-export const createTable = async (capacity :number,token: string) => {
-    try {
-      const response = await axios.post(`${API_BASE_URL}/admin/tables`, 
-        { capacity, is_reserved: false }, 
-        {
+export const createTable = async (capacity: number, token: string) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/admin/tables`,
+      { capacity, is_reserved: false },
+      {
         headers: { Authorization: `Bearer ${token}` },
-      });
-      return response.data;
-    } catch (error) {
-      console.error("Failed to create table", error);
-      throw error;
-    }
-  };
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to create table", error);
+    throw error;
+  }
+};
 
-export const updateTable = async (tableId: number, capacity: number, token: string) => {
+export const updateTable = async (
+  tableId: number,
+  capacity: number,
+  token: string
+) => {
   try {
     await axios.put(
       `${API_BASE_URL}/admin/tables/${tableId}`,

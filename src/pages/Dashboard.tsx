@@ -1,5 +1,5 @@
-import { useState, useEffect, useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { useState, useEffect } from "react";
+// import { AuthContext } from "../context/AuthContext";
 import {
   getAvailableTables,
   reserveTable,
@@ -8,7 +8,7 @@ import {
 import TableCard from "../components/TableCard";
 
 const Dashboard = () => {
-  const { user } = useContext(AuthContext)!;
+  // const { user } = useContext(AuthContext)!;
   const [tables, setTables] = useState<any[]>([]);
   const token = localStorage.getItem("token");
 
