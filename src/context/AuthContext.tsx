@@ -1,67 +1,54 @@
 import { createContext, useState, useEffect, ReactNode } from "react";
-import { loginUser } from "../services/authService";
-import { jwtDecode } from "jwt-decode";
 
+import { jwtDecode } from "jwt-decode";
 
 interface AuthContextType {
   user: { username: string; role: string } | null;
-  token: string | null;
-  login: (username: string, password: string) => Promise<void>;
+  login: (token: string) => Promise<void>;
   logout: () => void;
 }
-
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 // AuthProvider Component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
- 
-  const storedToken = localStorage.getItem("token");
   const storedUser = localStorage.getItem("user");
-  
-  const [token, setToken] = useState<string | null>(storedToken);
+
   const [user, setUser] = useState<{ username: string; role: string } | null>(
     storedUser ? JSON.parse(storedUser) : null
   );
 
-
   useEffect(() => {
-    if (token && user) {
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-    } else {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decoded: any = jwtDecode(token);
+      if (decoded) {
+        const userData = { username: decoded.sub, role: decoded.role };
+        setUser(userData);
+      }
     }
-  }, [user]);
+  }, []);
 
-
-  const login = async (username: string, password: string) => {
+  const login = async (token: string) => {
     try {
-      const data = await loginUser(username, password); 
-      const decodedToken: any = jwtDecode(data.access_token); 
-
-      const userData = { username, role: decodedToken.role }; 
-
-      
-      setToken(data.access_token);
+      const decodedToken: any = jwtDecode(token);
+      const userData = { username: decodedToken.sub, role: decodedToken.role };
       setUser(userData);
       localStorage.setItem("user", JSON.stringify(userData));
-      localStorage.setItem("token", JSON.stringify(data.access_token));
+      localStorage.setItem("token", token);
     } catch (error) {
       console.error("Login failed", error);
-      
     }
   };
 
-  
   const logout = () => {
-    setToken(null);
     setUser(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
