@@ -1,3 +1,6 @@
+(window as any).TextEncoder = TextEncoder;
+(window as any).TextDecoder = TextDecoder;
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signupUser } from "../services/authService";
@@ -21,6 +24,7 @@ const SignUpForm = () => {
 
     try {
       await signupUser(username, password, role);
+      alert("Signup successful, please login.");
       navigate("/");
     } catch (error) {
       setError("Signup failed, please try again.");

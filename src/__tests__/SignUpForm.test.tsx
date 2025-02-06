@@ -1,6 +1,7 @@
+import "@testing-library/jest-dom";
+import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import SignUpForm from "../components/SignupForm";
-import "@testing-library/jest-dom";
 import { MemoryRouter } from "react-router-dom";
 import { signupUser } from "../services/authService";
 

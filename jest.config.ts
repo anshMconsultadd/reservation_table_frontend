@@ -1,12 +1,13 @@
-import { JestConfigWithTsJest } from "ts-jest";
-
-const config: JestConfigWithTsJest = {
-  preset: "ts-jest",
+export default {
   testEnvironment: "jsdom",
   transform: {
-    "^.+\\.tsx?$": ["ts-jest", { tsconfig: "./tsconfig.app.json" }] // Ensure it uses tsconfig.app.json
+    "^.+\\.tsx?$": "ts-jest",
   },
-  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json"],
-};
 
-export default config;
+  moduleNameMapper: {
+    "\\.(css|less|sass|scss)$": "identity-obj-proxy",
+    "^.+\\.svg$": "jest-transformer-svg",
+  },
+
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
+};

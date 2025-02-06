@@ -16,13 +16,17 @@
     "jsx": "react-jsx",
     "allowJs": true,
 
+    /* Important Fixes */
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    
+
     /* Important for Jest */
     "types": ["jest", "@testing-library/jest-dom"]
   },
